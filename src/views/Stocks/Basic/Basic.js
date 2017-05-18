@@ -1,79 +1,7 @@
-import createG2 from 'g2-react'
-import G2 from 'g2'
-import Slider from 'g2'
 import 'whatwg-fetch'
-
 import React, { Component } from 'react'
-
-const Chart = createG2(chart => {
-
-  chart.col('trend', {
-    type: 'cat',
-    alias: '趋势',
-    values: ['上涨', '下跌']
-  });
-  chart.col('time', {
-    type: 'timeCat',
-    nice: false,
-    mask: 'mm-dd',
-    alias: '时间',
-    tickCount: 10
-  });
-  chart.col('volumn', { alias: '成交量' });
-  chart.col('start', { alias: '开盘价' });
-  chart.col('end', { alias: '收盘价' });
-  chart.col('max', { alias: '最高价' });
-  chart.col('min', { alias: '最低价' });
-  chart.col('start+end+max+min', { alias: '股票价格' });
-
-  chart.axis('time', {
-    title: null
-  });
-  chart.schema()
-    .position('time*(start+end+max+min)')
-    .color('trend', ['#2AF483', '#F80041'])
-    .shape('candle')
-    .tooltip('start*end*max*min*volumn');
-
-  var frame = chart.get('data');
-  var chart1 = new G2.Chart({
-    id: 'c1',
-    forceFit: true,
-    height: 60,
-    plotCfg: {
-      margin: [5, 120, 10],
-      background: {
-        fill: '#191821'
-      }
-    }
-  });
-  chart1.source(frame);
-  chart1.col('volumn', { alias: '成交量(万)', tickCount: 2, });
-  chart1.col('time', {
-    type: 'timeCat',
-    nice: false,
-    mask: 'mm-dd',
-    alias: '时间',
-    tickCount: 10
-  });
-  chart1.axis('time', false);
-  chart1.axis('volumn', {
-    title: {textAlign: 'center'},
-    formatter: function (val) {
-      return parseInt(val / 1000, 10) + 'k';
-    }
-  });
-  chart1.interval().position('time*volumn').color('trend', ['#2AF483', '#F80041']).tooltip('volumn');
-  chart1.legend('trend', false);
-  var slider = new Slider({
-    domId: 'slider',
-    height: 30,
-    charts: [chart, chart1],
-    xDim: 'time',
-    yDim: 'max'
-  });
-  slider.render();
-});
+// import { BarChart } from 'react-d3'
+import { Chart } from 'react-google-charts';
 
 const API_HEADERS = {
     'Content-Type': 'application/json',
@@ -82,60 +10,79 @@ const API_HEADERS = {
 
 class Basic extends Component {
   constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     barData:[
+  //     {label: 'A', value: 5},
+  //     {label: 'B', value: 6},
+  //     {label: 'F', value: 7}],
+  //     width:500,
+  //     height:200,
+  //     fillColor:'#3182bd',
+  //     title:'Bar chart'
+  // };
     super(props);
     this.state = {
-      data: [],
-      forceFit: true,
-      width: 500,
-      height: 250,
-      plotCfg: {
-        margin: [60, 120, 30],
-        background: {
-          fill: '#191821'
-        }
-      }
+      options: {
+        title: 'Age vs. Weight comparison',
+        hAxis: { title: 'Age', minValue: 0, maxValue: 15 },
+        vAxis: { title: 'Weight', minValue: 0, maxValue: 15 },
+        legend: 'none',
+      },
+      data: [
+        ['Age', 'Weight'],
+        [8, 12],
+        [4, 5.5],
+        [11, 14],
+        [4, 5],
+        [3, 3.5],
+        [6.5, 7],
+      ],
     };
   }
 
   componentWillMount() {
-    fetch('candleSticks.json',{headers:API_HEADERS})
-    .then((response) => response.json())
-    .then((responseData) => {
-      // 创建数据源
-      var Frame = G2.Frame;
-      var frame = new Frame(responseData.data);
-      frame.addCol('trend', function (obj) {
-        return (obj.start <= obj.end) ? 0 : 1;
-      });
+    // fetch("https://raw.githubusercontent.com/antvis/g2-react/master/examples/candleSticks.json",{headers:API_HEADERS})
+    // .then((response) => response.json())
+    // .then((responseData) => {
+    //   // 创建数据源
+    //   var Frame = G2.Frame;
+    //   var frame = new Frame(responseData.data);
+    //   frame.addCol('trend', function (obj) {
+    //     return (obj.start <= obj.end) ? 0 : 1;
+    //   });
 
-      this.setState({
-        data: frame
-      });
-    }).catch(function (error) {
-      console.log(error);
-    });
+    //   this.setState({
+    //     data: frame
+    //   });
+    // }).catch(function (error) {
+    //   console.log(error);
+    // });
+
+      // var Frame = G2.Frame;
+      // var frame = new Frame(candle);
+      // frame.addCol('trend', function (obj) {
+      //   return (obj.start <= obj.end) ? 0 : 1;
+      // });
+
+      // this.setState({
+      //   data: frame
+      // });
   }
 
   render() {
-    var data = this.state.data;
-    if (data instanceof G2.Frame) {
-      data = data.toJSON();
-    }
-    if (data.length === 0) {
-      return (<div></div>);
-    } else {
       return (
-        <div>
           <Chart
+            chartType="ScatterChart"
             data={this.state.data}
-            width={this.state.width}
-            height={this.state.height}
-            plotCfg={this.state.plotCfg}
-            forceFit={this.state.forceFit} />
-        </div>
+            options={this.state.options}
+            graph_id="ScatterChart"
+            width="100%"
+            height="400px"
+            legend_toggle
+          />
       );
-    }
-  }
+   }
 }
 
 export default Basic;

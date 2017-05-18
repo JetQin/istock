@@ -45,7 +45,7 @@ module.exports = {
     module:{
         loaders:[
             // { test:/\.jsx?$/,include:APPLICATION_PATH.ROOT,loaders: 'babel',query: { presets: ['es2015', 'react'] }},
-            { test:/\.jsx?$/,  include:APPLICATION_PATH.ROOT,loaders: ['react-hot', 'babel?presets[]=es2015,presets[]=react']},
+            { test:/\.jsx?$/,  include:APPLICATION_PATH.ROOT,loaders: ['react-hot-loader', 'babel-loader?presets[]=es2015,presets[]=react']},
             { test: /\.css$/,  loader: "style-loader!css-loader" },
             { test: /\.json$/, loader: "url-loader?limit=8192" }
         ]
@@ -55,5 +55,4 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin()
     ]
 
-};
-
+}
