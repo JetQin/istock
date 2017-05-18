@@ -1,133 +1,66 @@
- const Chart = createG2(chart => {
-      var Stat = G2.Stat;
-      chart.col('trend', {
-        type: 'cat',
-        alias: '趋势',
-        values: ['上涨','下跌']
-      });
-      chart.col('time', {
-        type: 'timeCat',
-        nice: false,
-        mask: 'mm-dd',
-        alias: '时间',
-        tickCount: 10
-      });
-      chart.col('volumn', {alias: '成交量'});
-      chart.col('start', {alias: '开盘价'});
-      chart.col('end', {alias: '收盘价'});
-      chart.col('max', {alias: '最高价'});
-      chart.col('min', {alias: '最低价'});
-      chart.col('start+end+max+min', {alias: '股票价格'});
+import createG2 from 'g2-react';
+import React from 'react'
+import chartdata from "./data.json"
 
-      chart.axis('time', {
-        title: null
-      });
-      chart.schema()
-        .position('time*(start+end+max+min)')
-        .color('trend', ['#2AF483','#F80041'])
-        .shape('candle')
-        .tooltip('start*end*max*min*volumn');
+let uniqueId = 0;
+function generateUniqueId() {
+  return `rc-g2-${uniqueId++}`;
+}
 
-      var frame = chart.get('data');
-      var chart1 = new G2.Chart({
-        id: 'c1',
-        forceFit: true,
-        height: 60,
-        plotCfg: {
-          margin: [5, 120, 10],
-          background: {
-            fill: '#191821'
-          }
-        }
-      });
-      chart1.source(frame);
-      chart1.col('volumn', {
-        alias: '成交量(万)',
-        tickCount: 2,
-      });
-      chart1.col('time',{
-        type: 'timeCat',
-        nice: false,
-        mask: 'mm-dd',
-        alias: '时间',
-        tickCount: 10
-      });
-      chart1.axis('time', false);
-      chart1.axis('volumn', {
-        title: {
-          textAlign: 'center'
-        },
-        formatter: function(val) {
-          return parseInt(val / 1000, 10) + 'k';
-        }
-      });
-      chart1.interval()
-            .position('time*volumn')
-            .color('trend', ['#2AF483','#F80041'])
-            .tooltip('volumn');
-      chart1.legend('trend', false);
-      var slider = new Slider({
-        domId: 'slider',
-        height: 30,
-        charts: [chart, chart1],
-        xDim: 'time',
-        yDim: 'max'
-      });
-      slider.render();      
-    });
+const Line = createG2(chart => {
+  chart.line().position('time*price').color('name').shape('spline').size(2);
+  chart.render();
+});
 
-    class Basic extends Components{
-      getInitialState() {
-        return {
-          data: [],
-          forceFit: true,
+class Chart extends React.Component {
+
+    constructor(props, context) {
+      super(props, context);
+      this.state = {
+          data: chartdata.slice(0, chartdata.length / 2 - 1),
           width: 500,
           height: 250,
           plotCfg: {
-            margin: [60, 120, 30],
-            background: {
-              fill: '#191821'
-            }
-          }
-        };
-      }
-      componentDidMount(){
-        const self = this;
-        axios.get('../../../static/data/candleSticks.json').then(function (response) {
-          // 创建数据源
-          var Frame = G2.Frame;
-          var frame = new Frame(response.data);
-          frame.addCol('trend', function(obj) {
-            return (obj.start <= obj.end) ? 0 : 1;
-          });
-
-          self.setState({
-            data: frame
-          });
-        }).catch(function (error) {
-          console.log(error);
-        });
-      }
-      render() {
-        var data = this.state.data;
-        if (data instanceof G2.Frame) {
-          data = data.toJSON();
-        }
-        if (data.length === 0) {
-          return (<div></div>);
-        } else {
-          return (
-            <div>
-              <Chart
-                data={this.state.data}
-                width={this.state.width}
-                height={this.state.height}
-                plotCfg={this.state.plotCfg}
-                forceFit={this.state.forceFit} />
-            </div>
-          );
-        }
-      }
+          margin: [10, 100, 50, 120],
+        },
+        forceFit:true
+      };
+      this.chartId = generateUniqueId();
+      this.changeHandler = this.changeHandler.bind(this);
     }
 
-    export default Basic;
+    changeHandler() {
+     this.setState({
+      data: chartdata.slice(chartdata.length / 2, chartdata.length - 1),
+     });
+    }
+
+    componentDidMount() {
+      // this.initChart(this.props);
+    }
+
+    render() {
+      return (
+        <div>
+          <Line
+            data={this.state.data}
+            width={this.state.width}
+            height={this.state.height}
+            plotCfg={this.state.plotCfg}
+          />
+          <button onClick={this.changeHandler}>Change Data</button>
+        </div>
+      );
+    }
+  }
+
+  Chart.propTypes = {
+    data: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+    width: React.PropTypes.number.isRequired,
+    height: React.PropTypes.number.isRequired,
+    plotCfg: React.PropTypes.object,
+    forceFit: React.PropTypes.bool,
+    configs: React.PropTypes.object,
+  };
+
+export default Chart;

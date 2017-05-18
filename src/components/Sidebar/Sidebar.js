@@ -31,6 +31,9 @@ class Sidebar extends Component {
                 <li className="nav-item">
                   <Link to={'/stocks/basic'} className="nav-link" activeClassName="active"><i className="icon-puzzle"></i> Basic</Link>
                 </li>
+                <li className="nav-item">
+                  <Link to={'/stocks/chart'} className="nav-link" activeClassName="active"><i className="icon-puzzle"></i> g2-Chart</Link>
+                </li>
                  <li className="nav-item">
                   <Link to={'/stocks/current'} className="nav-link" activeClassName="active"><i className="icon-puzzle"></i> Current</Link>
                 </li>
