@@ -8,6 +8,8 @@ import Full from './containers/Full/'
 import Dashboard from './views/Dashboard/'
 import Basic from './views/Stocks/Basic/'
 import Chart from './views/Stocks/Basic/Chart.js'
+import CandleStick from './views/Stocks/Basic/CandleStick.js'
+import Table from './views/Stocks/Basic/Table.js'
 import Current from './views/Stocks/Current/'
 import History from './views/Stocks/History/'
 
@@ -21,6 +23,8 @@ export default (
         <IndexRoute component={Basic}/>
         <Route path="basic" name="Basic" component={Basic}/>
         <Route path="chart" name="chart" component={Chart}/>
+        <Route path="candlestick" name="chart" component={CandleStick}/>
+        <Route path="table" name="chart" component={Table}/>
         <Route path="current" name="Current" component={Current}/>
         <Route path="history" name="History" component={History}/>
       </Route>

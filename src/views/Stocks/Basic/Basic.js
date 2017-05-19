@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 // import { BarChart } from 'react-d3'
 import { Chart } from 'react-google-charts';
 
-const API_HEADERS = {
-    'Content-Type': 'application/json',
-    Authorization: 'any-string-you-like'
-};
+// const API_HEADERS = {
+//     'Content-Type': 'application/json',
+//     Authorization: 'any-string-you-like'
+// };
 
 class Basic extends Component {
   constructor(props) {
