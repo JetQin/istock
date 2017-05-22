@@ -73,7 +73,7 @@ class CandleStick extends Component {
       var values = [];
       for (var i = 0; i < rawData.length; i++) {
         var item = rawData[i];
-        values.push(item.end);
+        values.push(item.slice(1,5));
       }
       return {
         'md5':  this.calculateMA(5, values),
