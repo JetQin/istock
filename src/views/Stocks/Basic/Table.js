@@ -1,45 +1,40 @@
 import 'whatwg-fetch'
+import PropTypes from 'prop-types';
 import React, { Component } from 'react'
-import { Chart } from 'react-google-charts';
+import { Table } from 'antd';
 
-class Table extends Component {
-  constructor(props) {
-
-    super(props);
-    this.state = {
-      options: {
-        title: 'Age vs. Weight comparison',
-        hAxis: { title: 'Age', minValue: 0, maxValue: 15 },
-        vAxis: { title: 'Weight', minValue: 0, maxValue: 15 },
-        legend: 'none',
-      },
-      data: [
-        ['Age', 'Weight'],
-        [8, 12],
-        [4, 5.5],
-        [11, 14],
-        [4, 5],
-        [3, 3.5],
-        [6.5, 7],
-      ],
-    };
-  }
-
-  componentWillMount() {
-   
-  }
+class Stocks extends Component {
 
   render() {
+      const data = [{
+        key: '1',
+        name: '胡彦斌',
+        age: 32,
+        address: '西湖区湖底公园1号'
+      }, {
+        key: '2',
+        name: '胡彦祖',
+        age: 42,
+        address: '西湖区湖底公园1号'
+      }];
+
+      const columns = [{
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+      }, {
+        title: '年龄',
+        dataIndex: 'age',
+        key: 'age',
+      }, {
+        title: '住址',
+        dataIndex: 'address',
+        key: 'address',
+      }];
       return (
-          <Chart
-            chartType="ScatterChart"
-            data={this.state.data}
-            options={this.state.options}
-            graph_id="ScatterChart"
-            width="100%"
-            height="400px"
-            legend_toggle
-          />
+          <div>
+            <Table dataSource={data} columns={columns} />
+          </div>
       );
    }
 }
